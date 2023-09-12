@@ -18,11 +18,6 @@ function App() {
   const [teams, setTeams] = useState([]);
 
   const createTeams = (people, teamCount) => {
-    if (teamCount <= 0 || people.length === 0) {
-      // TODO: Error
-      return false;
-    }
-
     const shuffledPeople = [...people].sort(() => Math.random() - 0.5);
 
     const teams = Array.from({ length: teamCount }, () => []);
@@ -33,6 +28,7 @@ function App() {
 
     setTeams(teams);
   };
+
   const onSubmit = (data) => {
     const list = data?.participantList
       .split("\n")
@@ -47,21 +43,46 @@ function App() {
 
   return (
     <Container
+      maxWidth={`xl`}
       sx={{
-        backgroundColor: `background.default`,
+        position: `fixed`,
+        width: `100vw`,
         height: `100vh`,
+        display: `flex`,
+        alignItems: `center`,
+        background: `linear-gradient(360deg, rgba(1,106,112,1) 0%, rgba(255,255,221,0.9934567577030813) 70%)`,
       }}
-      maxWidth={`lg`}
     >
-      <form onSubmit={handleSubmit(onSubmit)} action="">
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={12} textAlign={`center`}>
-            <Typography variant="h1" fontWeight={`bold`}>
-              Random Team Generator
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper elevation={2} sx={{ p: 10 }}>
+      <Paper
+        elevation={2}
+        sx={{
+          px: 10,
+          py: 4,
+          width: `100%`,
+          height: `80%`,
+          background: `rgba( 255, 255, 255, 0.2 )`,
+          boxShadow: `0 8px 32px 0 rgba( 31, 38, 135, 0.37 )`,
+          backdropFilter: `blur( 5.5px )`,
+          borderRadius: `10px`,
+          border: `1px solid rgba( 255, 255, 255, 0.18 )`,
+        }}
+      >
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          action=""
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Grid container spacing={4} rowSpacing={10}>
+            <Grid item xs={12} md={12} textAlign={`center`}>
+              <Typography
+                variant="h6"
+                fontWeight={`bold`}
+                sx={{ position: `absolute` }}
+              >
+                Random Team Generator
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
               <Stack>
                 <TextField
                   type={`number`}
@@ -85,38 +106,38 @@ function App() {
                   {...register(`participantList`, { required: true })}
                 />
               </Stack>
-            </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box>
+                <Button
+                  variant="contained"
+                  size={`large`}
+                  type={`submit`}
+                  color={`primary`}
+                >
+                  Generate
+                </Button>
+                <Button
+                  onClick={handleReset}
+                  variant="contained"
+                  size={`large`}
+                  color={`secondary`}
+                >
+                  Reset
+                </Button>
+                {teams.map((team, index) => (
+                  <Box key={index} display={`flex`}>
+                    <Typography>Team {index + 1}</Typography>
+                    {team.map((participant) => (
+                      <Chip key={participant} label={participant} />
+                    ))}
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Box>
-              <Button
-                variant="contained"
-                size={`large`}
-                type={`submit`}
-                color={`primary`}
-              >
-                Generate
-              </Button>
-              <Button
-                onClick={handleReset}
-                variant="contained"
-                size={`large`}
-                color={`secondary`}
-              >
-                Reset
-              </Button>
-              {teams.map((team, index) => (
-                <Box key={index} display={`flex`}>
-                  <Typography>Team {index + 1}</Typography>
-                  {team.map((participant) => (
-                    <Chip key={participant} label={participant} />
-                  ))}
-                </Box>
-              ))}
-            </Box>
-          </Grid>
-        </Grid>
-      </form>
+        </form>
+      </Paper>
     </Container>
   );
 }
