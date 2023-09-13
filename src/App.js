@@ -1,21 +1,22 @@
 import {
   Grid,
   Typography,
-  Container,
   Button,
   Box,
   Paper,
   TextField,
-  Stack,
   Chip,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Background from "./components/layout/background";
+import Inner from "./components/layout/inner";
+import Card from "./components/card/card";
 
 function App() {
   const { register, handleSubmit, reset } = useForm();
 
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState();
 
   const createTeams = (people, teamCount) => {
     const shuffledPeople = [...people].sort(() => Math.random() - 0.5);
@@ -41,135 +42,115 @@ function App() {
   };
 
   return (
-    <Box
-      sx={{
-        position: `fixed`,
-        width: `100vw`,
-        height: `100vh`,
-        backgroundColor: `#4158D0`,
-        backgroundImage: `linear-gradient(-30deg, #4158D0 0%, #C850C0 20%, #FFCC70 100%)`,
-        p: 10,
-      }}
-    >
-      <Container
-        maxWidth={`xl`}
-        m={`0 auto`}
-        sx={{
-          display: `flex`,
-          alignItems: `center`,
-          height: `100%`,
-        }}
-      >
+    <Background>
+      <Inner>
         <Paper
-          elevation={2}
           sx={{
-            px: 10,
+            px: { md: 10, xs: 4 },
             py: 4,
             width: `100%`,
             height: `100%`,
-            background: `rgba( 255, 255, 255, 0.1 )`,
+            background: `rgba( 255, 255, 255, 0.01)`,
             boxShadow: `0 2px 30px 0 rgba(0,0,0,0.3)`,
-            backdropFilter: `blur(5.5px)`,
+            backdropFilter: `blur(12px)`,
             borderRadius: `10px`,
-            overflowY: `scroll`,
+            display: `flex`,
+            flexDirection: `column`,
+            overflow: `scroll`,
           }}
         >
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            action=""
-            onKeyDown={(e) => e.stopPropagation()}
+          <Typography
+            variant="h5"
+            fontWeight={`bold`}
+            color={`rgba(255,255,255,0.4)`}
+            mb={2}
           >
-            <Grid container spacing={4} rowSpacing={10}>
-              <Grid item xs={12} md={12} textAlign={`center`}>
-                <Typography
-                  variant="h6"
-                  fontWeight={`bold`}
-                  color={`rgba(255,255,255,0.7)`}
-                  sx={{ position: `absolute`, backdropFilter: `blue(5px)` }}
+            Random Team Generator
+          </Typography>
+          <Box sx={{ flex: 1 }}>
+            <Grid container height={`100%`} spacing={2}>
+              <Grid item md={5} xs={12}>
+                <Card
+                  component={`form`}
+                  onSubmit={handleSubmit(onSubmit)}
+                  action=""
                 >
-                  Random Team Generator
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Stack
-                  sx={{
-                    p: 5,
-                    background: `rgba( 255, 255, 255, 0.1 )`,
-                    boxShadow: `0 1px 30px 0 rgba(0,0,0,0.2)`,
-                    borderRadius: `10px`,
-                  }}
-                >
-                  <TextField
-                    variant="standard"
-                    type={`number`}
-                    label={`Number of Teams`}
-                    placeholder={"Enter the number of teams"}
-                    sx={{
-                      mb: 2,
-                      background: `rgba(255, 255, 255, 0.2)`,
-                      boxShadow: ` 0 5px 15px rgba(0, 0, 0, 0.05)`,
-                      p: 1,
-                      borderRadius: `5px`,
-                    }}
-                    InputLabelProps={{ shrink: true }}
-                    inputProps={{ min: 0 }}
-                    {...register(`numberOfTeams`, {
-                      min: 2,
-                      required: true,
-                    })}
-                  />
-                  <TextField
-                    label={`Participant List`}
-                    multiline
-                    rows={10}
-                    name={`participantList`}
-                    placeholder="Enter participant names (separated by Enter)"
-                    InputLabelProps={{ shrink: true }}
-                    {...register(`participantList`, { required: true })}
-                  />
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md>
-                <Box
-                  sx={{
-                    p: 5,
-                    height: `100%`,
-                    background: `rgba( 255, 255, 255, 0.1 )`,
-                    boxShadow: `0 1px 30px 0 rgba(0,0,0,0.2)`,
-                    borderRadius: `10px`,
-                  }}
-                >
+                  <Box flexGrow={1}>
+                    <TextField
+                      variant="filled"
+                      type={`number`}
+                      label={`Number of Teams`}
+                      placeholder={"Enter the number of teams"}
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ min: 0 }}
+                      {...register(`numberOfTeams`, {
+                        min: 2,
+                        required: true,
+                      })}
+                      sx={{ mb: 5, width: `100%` }}
+                    />
+                    <TextField
+                      variant="filled"
+                      label={`Participant List`}
+                      multiline
+                      rows={10}
+                      name={`participantList`}
+                      placeholder="Enter participant names (separated by Enter)"
+                      InputLabelProps={{ shrink: true }}
+                      sx={{ mb: 5, width: `100%` }}
+                      {...register(`participantList`, { required: true })}
+                    />
+                  </Box>
                   <Button
                     variant="contained"
                     size={`large`}
                     type={`submit`}
-                    color={`primary`}
+                    fullWidth
+                    // sx={{ backgroundColor: `white`, color: `black` }}
                   >
                     Generate
                   </Button>
-                  <Button
-                    onClick={handleReset}
-                    variant="contained"
-                    size={`large`}
-                    color={`secondary`}
-                  >
-                    Reset
-                  </Button>
-                  {teams.map((team, index) => (
-                    <Box key={index} display={`flex`}>
-                      <Typography>Team {index + 1}</Typography>
-                      {team.map((participant) => (
-                        <Chip key={participant} label={participant} />
-                      ))}
-                    </Box>
-                  ))}
-                </Box>
+                </Card>
+              </Grid>
+              <Grid item md={7} xs={12}>
+                <Card>
+                  <Box flexGrow={1}>
+                    {teams?.map((team, index) => (
+                      <Box key={index} display={`flex`} sx={{ mb: 2 }}>
+                        <Typography minWidth={`100px`}>
+                          Team {index + 1}
+                        </Typography>
+                        <Box>
+                          {team?.map((participant) => (
+                            <Chip
+                              key={participant}
+                              label={participant}
+                              sx={{ m: 0.2 }}
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                  <Box textAlign={`right`}>
+                    {teams?.length > 0 && (
+                      <Button
+                        onClick={handleReset}
+                        variant="contained"
+                        size={`large`}
+                        color={`error`}
+                      >
+                        Reset
+                      </Button>
+                    )}
+                  </Box>
+                </Card>
               </Grid>
             </Grid>
-          </form>
+          </Box>
         </Paper>
-      </Container>
-    </Box>
+      </Inner>
+    </Background>
   );
 }
 
