@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/TeamGenerator/static/js/main.6b9add78.js",
+    "main.js": "/TeamGenerator/static/js/main.9cd10ea6.js",
     "static/js/787.c4a10a28.chunk.js": "/TeamGenerator/static/js/787.c4a10a28.chunk.js",
     "index.html": "/TeamGenerator/index.html",
-    "main.6b9add78.js.map": "/TeamGenerator/static/js/main.6b9add78.js.map",
+    "main.9cd10ea6.js.map": "/TeamGenerator/static/js/main.9cd10ea6.js.map",
     "787.c4a10a28.chunk.js.map": "/TeamGenerator/static/js/787.c4a10a28.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.6b9add78.js"
+    "static/js/main.9cd10ea6.js"
   ]
 }
