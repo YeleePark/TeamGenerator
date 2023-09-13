@@ -6,8 +6,9 @@ import {
   Paper,
   TextField,
   Chip,
+  LinearProgress,
 } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import Background from "./components/layout/background";
 import Inner from "./components/layout/inner";
@@ -17,29 +18,30 @@ function App() {
   const { register, handleSubmit, reset } = useForm();
 
   const [teams, setTeams] = useState();
+  const [loading, setLoading] = useState(false);
 
-  const createTeams = (people, teamCount) => {
+  const createTeams = useCallback((people, teamCount) => {
     const shuffledPeople = [...people].sort(() => Math.random() - 0.5);
-
     const teams = Array.from({ length: teamCount }, () => []);
     shuffledPeople.forEach((person, index) => {
       const teamIndex = index % teamCount;
       teams[teamIndex].push(person);
     });
-
     setTeams(teams);
-  };
-  const onSubmit = (data) => {
+    setLoading(false);
+  }, []);
+  const onSubmit = useCallback((data) => {
+    setLoading(true);
     const list = data?.participantList
       .split("\n")
       .filter((item) => item !== "");
     const numberOfTeams = data?.numberOfTeams;
-    createTeams(list, numberOfTeams);
-  };
-  const handleReset = () => {
+    setTimeout(() => createTeams(list, numberOfTeams), 5000);
+  }, []);
+  const handleReset = useCallback(() => {
     reset({ numberOfTeams: "", participantList: "" });
     setTeams([]);
-  };
+  }, []);
 
   return (
     <Background>
@@ -103,10 +105,14 @@ function App() {
                   </Box>
                   <Button
                     variant="contained"
+                    color={`inherit`}
                     size={`large`}
                     type={`submit`}
                     fullWidth
-                    // sx={{ backgroundColor: `white`, color: `black` }}
+                    sx={{
+                      background: `rgba( 255, 255, 255, 0.1 )`,
+                      boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
+                    }}
                   >
                     Generate
                   </Button>
@@ -114,36 +120,48 @@ function App() {
               </Grid>
               <Grid item md={7} xs={12}>
                 <Card>
-                  <Box flexGrow={1}>
-                    {teams?.map((team, index) => (
-                      <Box key={index} display={`flex`} sx={{ mb: 2 }}>
-                        <Typography minWidth={`100px`}>
-                          Team {index + 1}
-                        </Typography>
-                        <Box>
-                          {team?.map((participant) => (
-                            <Chip
-                              key={participant}
-                              label={participant}
-                              sx={{ m: 0.2 }}
-                            />
-                          ))}
-                        </Box>
+                  {teams?.length ? (
+                    <>
+                      <Box flexGrow={1}>
+                        {teams?.map((team, index) => (
+                          <Box key={index} display={`flex`} sx={{ mb: 2 }}>
+                            <Typography minWidth={`100px`}>
+                              Team {index + 1}
+                            </Typography>
+                            <Box>
+                              {team?.map((participant) => (
+                                <Chip
+                                  key={participant}
+                                  label={participant}
+                                  sx={{ m: 0.2 }}
+                                />
+                              ))}
+                            </Box>
+                          </Box>
+                        ))}
                       </Box>
-                    ))}
-                  </Box>
-                  <Box textAlign={`right`}>
-                    {teams?.length > 0 && (
-                      <Button
-                        onClick={handleReset}
-                        variant="contained"
-                        size={`large`}
-                        color={`error`}
-                      >
-                        Reset
-                      </Button>
-                    )}
-                  </Box>
+                      <Box textAlign={`right`}>
+                        {teams?.length > 0 && (
+                          <Button
+                            onClick={handleReset}
+                            variant="contained"
+                            size={`large`}
+                            color={`inherit`}
+                            sx={{
+                              background: `rgba( 255, 255, 255, 0.1 )`,
+                              boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
+                            }}
+                          >
+                            Reset
+                          </Button>
+                        )}
+                      </Box>
+                    </>
+                  ) : loading ? (
+                    <LinearProgress />
+                  ) : (
+                    <>12</>
+                  )}
                 </Card>
               </Grid>
             </Grid>
