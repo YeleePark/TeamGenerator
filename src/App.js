@@ -154,7 +154,7 @@ function App() {
                     boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
                   }}
                 >
-                  {loading ? <CircularProgress /> : <> Reset</>}
+                  {loading ? <CircularProgress /> : <>run</>}
                 </Button>
               )}
             </Box>
