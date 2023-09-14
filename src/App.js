@@ -1,18 +1,16 @@
 import {
-  Grid,
   Typography,
   Button,
   Box,
-  Paper,
   TextField,
-  Chip,
   LinearProgress,
+  CircularProgress,
+  Chip,
 } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import Background from "./components/layout/background";
-import Inner from "./components/layout/inner";
-import Card from "./components/card/card";
+import Container from "./components/layout/container";
+import GlassContainer from "./components/layout/glassContainer";
 
 function App() {
   const { register, handleSubmit, reset } = useForm();
@@ -44,131 +42,126 @@ function App() {
   }, []);
 
   return (
-    <Background>
-      <Inner>
-        <Paper
-          sx={{
-            px: { md: 10, xs: 4 },
-            py: 4,
-            width: `100%`,
-            height: `100%`,
-            background: `rgba( 255, 255, 255, 0.01)`,
-            boxShadow: `0 2px 30px 0 rgba(0,0,0,0.3)`,
-            backdropFilter: `blur(12px)`,
-            borderRadius: `10px`,
-            display: `flex`,
-            flexDirection: `column`,
-            overflow: `scroll`,
-          }}
-        >
-          <Typography
-            variant="h5"
-            fontWeight={`bold`}
-            color={`rgba(255,255,255,0.4)`}
-            mb={2}
+    <Box p={{ xs: 4, md: 10 }} height={`100%`}>
+      <Container>
+        <GlassContainer>
+          <Box
+            component={`form`}
+            onSubmit={handleSubmit(onSubmit)}
+            action=""
+            sx={{
+              display: `flex`,
+              flexDirection: `column`,
+              height: `100%`,
+            }}
           >
-            Random Team Generator
-          </Typography>
-          <Box sx={{ flex: 1 }}>
-            <Grid container height={`100%`} spacing={2}>
-              <Grid item md={5} xs={12}>
-                <Card
-                  component={`form`}
-                  onSubmit={handleSubmit(onSubmit)}
-                  action=""
-                >
-                  <Box flexGrow={1}>
-                    <TextField
-                      variant="filled"
-                      type={`number`}
-                      label={`Number of Teams`}
-                      placeholder={"Enter the number of teams"}
-                      InputLabelProps={{ shrink: true }}
-                      inputProps={{ min: 0 }}
-                      {...register(`numberOfTeams`, {
-                        min: 2,
-                        required: true,
-                      })}
-                      sx={{ mb: 5, width: `100%` }}
-                    />
-                    <TextField
-                      variant="filled"
-                      label={`Participant List`}
-                      multiline
-                      rows={10}
-                      name={`participantList`}
-                      placeholder="Enter participant names (separated by Enter)"
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 5, width: `100%` }}
-                      {...register(`participantList`, { required: true })}
-                    />
-                  </Box>
+            {/* title */}
+            <Box px={6} py={2}>
+              <Typography
+                variant="h6"
+                fontWeight={`bold`}
+                color={`rgba(0,0,0,0.7)`}
+              >
+                Random Team Generator
+              </Typography>
+            </Box>
+            {/* content */}
+            <Box
+              px={6}
+              py={5}
+              flexGrow={1}
+              maxHeight={`100%`}
+              overflow={`scroll`}
+            >
+              {loading ? (
+                <LinearProgress />
+              ) : !teams?.length ? (
+                <>
+                  <TextField
+                    type={`number`}
+                    label={`Number of Teams`}
+                    placeholder={"Enter the number of teams"}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ min: 0 }}
+                    {...register(`numberOfTeams`, {
+                      required: true,
+                    })}
+                    sx={{ mb: 5 }}
+                  />
+                  <TextField
+                    label={`Participant List`}
+                    multiline
+                    rows={10}
+                    name={`participantList`}
+                    placeholder="Enter participant names (separated by Enter)"
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ mb: 5, width: `100%` }}
+                    {...register(`participantList`, { required: true })}
+                  />
+                </>
+              ) : (
+                <Box>
+                  {teams?.map((team, index) => (
+                    <Box
+                      key={index}
+                      p={2}
+                      mb={2}
+                      display={`flex`}
+                      flexWrap={`wrap`}
+                      sx={{
+                        borderRadius: `5px`,
+                        background: `rgba(255, 255, 255, 0.1)`,
+                        backdropFilter: `blur(5px)`,
+                        boxshadow: `0 20px 50px rgba(0, 0, 0, 0.35)`,
+                      }}
+                    >
+                      <Box>🥳 {`Team ${index + 1}`}</Box>
+                      <Box>
+                        {team?.map((person) => (
+                          <Chip key={person} label={person} sx={{ m: 1 }} />
+                        ))}
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+            <Box px={6} py={3} textAlign={`right`}>
+              {teams?.length ? (
+                <>
                   <Button
+                    onClick={handleReset}
                     variant="contained"
-                    color={`inherit`}
                     size={`large`}
-                    type={`submit`}
-                    fullWidth
+                    color={`inherit`}
                     sx={{
                       background: `rgba( 255, 255, 255, 0.1 )`,
                       boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
                     }}
                   >
-                    Generate
+                    Reset
                   </Button>
-                </Card>
-              </Grid>
-              <Grid item md={7} xs={12}>
-                <Card>
-                  {teams?.length ? (
-                    <>
-                      <Box flexGrow={1}>
-                        {teams?.map((team, index) => (
-                          <Box key={index} display={`flex`} sx={{ mb: 2 }}>
-                            <Typography minWidth={`100px`}>
-                              Team {index + 1}
-                            </Typography>
-                            <Box>
-                              {team?.map((participant) => (
-                                <Chip
-                                  key={participant}
-                                  label={participant}
-                                  sx={{ m: 0.2 }}
-                                />
-                              ))}
-                            </Box>
-                          </Box>
-                        ))}
-                      </Box>
-                      <Box textAlign={`right`}>
-                        {teams?.length > 0 && (
-                          <Button
-                            onClick={handleReset}
-                            variant="contained"
-                            size={`large`}
-                            color={`inherit`}
-                            sx={{
-                              background: `rgba( 255, 255, 255, 0.1 )`,
-                              boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
-                            }}
-                          >
-                            Reset
-                          </Button>
-                        )}
-                      </Box>
-                    </>
-                  ) : loading ? (
-                    <LinearProgress />
-                  ) : (
-                    <>12</>
-                  )}
-                </Card>
-              </Grid>
-            </Grid>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  color={`inherit`}
+                  size={`large`}
+                  type={`submit`}
+                  disabled={loading}
+                  sx={{
+                    background: `rgba( 255, 255, 255, 0.1 )`,
+                    boxShadow: `0 2px 30px 0 rgba(0,0,0,0.1)`,
+                  }}
+                >
+                  {loading ? <CircularProgress /> : <> Reset</>}
+                </Button>
+              )}
+            </Box>
           </Box>
-        </Paper>
-      </Inner>
-    </Background>
+        </GlassContainer>
+      </Container>
+    </Box>
   );
 }
 

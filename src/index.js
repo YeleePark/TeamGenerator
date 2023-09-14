@@ -5,7 +5,22 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const theme = createTheme();
+
+const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: () => ({
+        body: {
+          position: `relative`,
+          width: `100%`,
+          height: `100vh`,
+          backgroundImage: `linear-gradient(135deg, #ff9a9e  10%, #F6416C 100%)`,
+        },
+        "#root": { height: `100vh` },
+      }),
+    },
+  },
+});
 
 root.render(
   <ThemeProvider theme={theme}>
@@ -14,7 +29,4 @@ root.render(
   </ThemeProvider>,
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

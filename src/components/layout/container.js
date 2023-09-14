@@ -1,21 +1,20 @@
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 
 // eslint-disable-next-line react/prop-types
-const Inner = ({ children }) => {
+const Container = ({ children }) => {
   return (
-    <Container
-      fixed
-      maxWidth={`xl`}
-      m={`0 auto`}
+    <Box
+      maxWidth={`lg`}
       sx={{
+        m: `0 auto`,
         display: `flex`,
         alignItems: `center`,
         height: `100%`,
       }}
     >
       {children}
-    </Container>
+    </Box>
   );
 };
 
-export default Inner;
+export default Container;
